@@ -14,6 +14,12 @@ namespace Practica_3
 {
     public partial class Clientes : Form
     {
+
+        private TextBox txtDescripcion;
+        private TextBox txtPrecio;
+        private DataGridView dgvProductos;
+
+
         public Clientes()
         {
             InitializeComponent();
