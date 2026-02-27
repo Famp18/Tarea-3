@@ -13,8 +13,10 @@ namespace Practica_3
 {
     public partial class Proveedores : Form
     {
+        private TextBox txtDescripcion;
+        private DataGridView dgvProductos;
+        private TextBox txtTelefono;
         private object dgvProveedores;
-        private object txtTelefono;
 
         private void Proveedores_Load(object sender, EventArgs e)
         {
