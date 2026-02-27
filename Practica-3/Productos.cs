@@ -72,5 +72,83 @@ namespace Practica_3
             btnActualizar.Enabled = false;
             btnEliminar.Enabled = false;
         }
+
+        private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvProductos.Rows[e.RowIndex];
+                txtNombre.Text = row.Cells["nombre_producto"].Value.ToString();
+                txtDescripcion.Text = row.Cells["descripcion_producto"].Value.ToString();
+                txtPrecio.Text = row.Cells["precio_producto"].Value.ToString();
+                btnActualizar.Enabled = true;
+                btnEliminar.Enabled = true;
+            }
+        }
+
+        private void btnActualizar_Click(object sender, EventArgs e)
+        {
+            if (dgvProductos.CurrentRow != null)
+            {
+                int idProducto = Convert.ToInt32(dgvProductos.CurrentRow.Cells["id_producto"].Value);
+                string connectionString = @"Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=GestionClientes;Data Source=DESKTOP-ASPTDKA\FRANCISCOMATEO;";
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string queryActualizarProducto = @"UPDATE Producto SET nombre_producto = @nombre, descripcion_producto = @descripcion, precio_producto = @precio WHERE id_producto = @id";
+                    using (SqlCommand cmd = new SqlCommand(queryActualizarProducto, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@nombre", txtNombre.Text.Trim());
+                        cmd.Parameters.AddWithValue("@descripcion", txtDescripcion.Text.Trim());
+                        cmd.Parameters.AddWithValue("@precio", decimal.Parse(txtPrecio.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@id", idProducto);
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Se ha actualizado el producto en la base de datos.");
+                            btnCargar_Click(sender, e);
+                            btnActualizar.Enabled = false;
+                            btnEliminar.Enabled = false;
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se pudo actualizar el producto en la base de datos.");
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            if (dgvProductos.CurrentRow != null)
+            {
+                int idProducto = Convert.ToInt32(dgvProductos.CurrentRow.Cells["id_producto"].Value);
+                string connectionString = @"Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=GestionClientes;Data Source=DESKTOP-ASPTDKA\FRANCISCOMATEO;";
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string queryEliminarProducto = @"DELETE FROM Producto WHERE id_producto = @id";
+                    using (SqlCommand cmd = new SqlCommand(queryEliminarProducto, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", idProducto);
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Se ha eliminado el producto de la base de datos.");
+                            btnCargar_Click(sender, e);
+                            btnActualizar.Enabled = false;
+                            btnEliminar.Enabled = false;
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se pudo eliminar el producto de la base de datos.");
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 }
